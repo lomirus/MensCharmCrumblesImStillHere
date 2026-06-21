@@ -2,7 +2,7 @@ return {
 	-- ====== 基本信息 ======
 	Title = "全世界男性魅力下降一百倍而我不变",
 	Author = "",
-	Description = "除主角以外，世界上所有男性角色的魅力除以2。",
+	Description = "除主角以外，世界上所有男性角色的魅力减半（最高魅力变为出众）。",
 	Cover = nil,
 	WorkshopCover = nil,
 	Version = "0.1.0.0",
