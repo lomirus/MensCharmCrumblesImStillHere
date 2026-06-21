@@ -25,14 +25,10 @@ public class Plugin : TaiwuRemakePlugin
 
     /// <summary>
     /// Postfix for Character.GetAttraction().
-    /// Caps attraction below 400 for all non-player male characters.
+    /// Halves attraction for all non-player male characters.
     /// </summary>
     private static void GetAttractionPostfix(Character __instance, ref short __result)
     {
-        // Skip if already below threshold
-        if (__result < 400)
-            return;
-
         // Skip the player (Taiwu)
         if (__instance.IsTaiwu())
             return;
@@ -42,7 +38,6 @@ public class Plugin : TaiwuRemakePlugin
         if (__instance.GetDisplayingGender() != 1)
             return;
 
-        // Cap at 399 (不得高于或等于400)
-        __result = 399;
+        __result = (short)(__result / 2);
     }
 }
