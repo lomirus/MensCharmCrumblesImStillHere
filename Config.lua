@@ -13,9 +13,7 @@ return {
 	FileId = 0,
 
 	-- ====== 加载方式 ======
-	FrontendPlugins = {
-		-- [1] = "MyModFrontend.dll",
-	},
+	FrontendPlugins = { },
 	BackendPlugins = {
 		[1] = "MensCharmCrumblesImStillHere.dll",
 	},
