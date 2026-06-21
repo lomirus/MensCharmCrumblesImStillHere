@@ -31,7 +31,8 @@ return {
 
 	-- ====== 标签 ======
 	TagList = {
-		[1] = "Compatible Mods",
+		[1] = "Modifications",
+		[2] = "Compatible Mods",
 	},
 
 	-- ====== 更新日志 ======
