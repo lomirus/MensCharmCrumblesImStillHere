@@ -1,12 +1,12 @@
 return {
 	Title = "全世界男性魅力下降一百倍而我不变",
 	Author = "mirus",
-	Description = "除主角以外，世界上所有男性角色的魅力减半（最高魅力变为出众）。",
+	Description = "除主角以外，世界上所有男性角色的魅力减半（最高魅力变为出众）。\n\n[strike]防止玩家被牛[/strike]",
 	WorkshopCover = "images.jpg",
 	Version = "0.1.0.0",
 	GameVersion = "1.0.13.0",
 	Source = 0,
-	FileId = 2,
+	FileId = 3748873190,
 	BackendPlugins = {
 		[1] = "MensCharmCrumblesImStillHere.dll",
 	},
@@ -25,6 +25,12 @@ return {
 			LogList = {
 				[1] = "项目初始化",
 			},
+		},
+		[2] = {
+			Timestamp = 1782017064,
+		},
+		[3] = {
+			Timestamp = 1782017174,
 		},
 	},
 	Cover = "images.jpg",
