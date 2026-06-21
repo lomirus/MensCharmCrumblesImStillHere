@@ -1,0 +1,28 @@
+# --- 编译产物 ---
+*.dll
+*.pdb
+*.exe
+*.mdb
+*.cache
+
+# --- .NET ---
+bin/
+obj/
+*.user
+*.suo
+*.vs/
+.vs/
+
+# --- IDE ---
+.idea/
+*.swp
+*.swo
+*~
+
+# --- 系统文件 ---
+Thumbs.db
+.DS_Store
+Desktop.ini
+
+# --- 模组运行时 ---
+Settings.Lua
