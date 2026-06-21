@@ -21,15 +21,7 @@ return {
 	},
 
 	-- ====== 用户设置 ======
-	DefaultSettings = {
-		[1] = {
-			SettingType = "Toggle",
-			Key = "EnableMod",
-			DisplayName = "启用模组",
-			Description = "开关本模组的所有功能",
-			DefaultValue = true,
-		},
-	},
+	DefaultSettings = { },
 
 	-- ====== 高级选项 ======
 	Visibility = 0,
