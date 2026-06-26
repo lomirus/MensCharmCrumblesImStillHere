@@ -11,15 +11,23 @@ public class Plugin : TaiwuRemakePlugin
     private Harmony? _harmony;
 
     /// <summary>
-    /// Cached MaxCharm setting:
-    /// 1-8 = proportionally scale charm to the selected tier,
-    /// other (9, etc.) = no modification.
+    /// 缓存的最高魅力档位：1-8 为有效缩放档位，其他值（如 9）不修改。
     /// </summary>
     private static int _maxCharm;
 
     /// <summary>
-    /// Upper bounds of each charm tier, 0-indexed (tier 1..9).
-    /// 非人=100, 可憎=200, ..., 绝世=800, 天人=900.
+    /// 若为 true，男身女相角色魅力保持不变。
+    /// </summary>
+    private static bool _femboyCharmRemains;
+
+    /// <summary>
+    /// 若为 true，女身男相角色魅力保持不变。
+    /// </summary>
+    private static bool _tomboyCharmRemains;
+
+    /// <summary>
+    /// 各魅力档位的上限值，从 1 档到 9 档。
+    /// 非人=100, 可憎=200, 不扬=300, 寻常=400, 出众=500, 瑾瑜=600, 龙姿=700, 绝世=800, 天人=900。
     /// </summary>
     private static readonly short[] TierUpperBounds =
     [
@@ -34,12 +42,12 @@ public class Plugin : TaiwuRemakePlugin
         900, // 天人    [800, 900]
     ];
 
-    /// <summary>Absolute maximum charm value in the game.</summary>
+    /// <summary>游戏中魅力值的绝对上限。</summary>
     private const short MaxCharmValue = 900;
 
     public override void Initialize()
     {
-        ReadMaxCharmSetting();
+        ReadAllSettings();
 
         _harmony = new Harmony("MensCharmCrumblesImStillHere");
         _harmony.Patch(
@@ -55,54 +63,78 @@ public class Plugin : TaiwuRemakePlugin
 
     public override void OnModSettingUpdate()
     {
-        ReadMaxCharmSetting();
+        ReadAllSettings();
     }
 
     /// <summary>
-    /// Reads the MaxCharm setting from the mod domain and caches it.
-    /// The framework passes dropdown indices as 0-based, so we add 1
-    /// to align with Config.lua Options (which are 1-indexed).
+    /// 从模组域读取全部配置并缓存。
+    /// 框架传回的下拉选项索引是 0-based，需加 1 对齐 Config.lua 的 Options（1-indexed）。
     /// </summary>
-    private void ReadMaxCharmSetting()
+    private void ReadAllSettings()
     {
-        if (DomainManager.Mod != null)
+        if (DomainManager.Mod == null)
+            return;
+
+        int val = 0;
+        if (DomainManager.Mod.GetSetting(ModIdStr, "MaxCharm", ref val))
         {
-            int val = 0;
-            if (DomainManager.Mod.GetSetting(ModIdStr, "MaxCharm", ref val))
-            {
-                // Convert from 0-based framework index to 1-based tier index
-                _maxCharm = val + 1;
-            }
+            _maxCharm = val + 1;
+        }
+
+        bool bVal = false;
+        if (DomainManager.Mod.GetSetting(ModIdStr, "FemboyCharmRemains", ref bVal))
+        {
+            _femboyCharmRemains = bVal;
+        }
+
+        bVal = true;
+        if (DomainManager.Mod.GetSetting(ModIdStr, "TomboyCharmRemains", ref bVal))
+        {
+            _tomboyCharmRemains = bVal;
         }
     }
 
     /// <summary>
-    /// Postfix for Character.GetAttraction().
-    /// Proportionally scales attraction for non-player male characters
-    /// down to the configured tier's upper bound.
+    /// Character.GetAttraction() 的后置补丁。
+    /// 将非太吾男性角色的魅力按比例缩放至选定档位的上限区间内。
+    ///
+    /// 性别判据：
+    ///   bio=1 display=1 → 男身男相 → 始终缩放
+    ///   bio=1 display=0 → 男身女相 → FemboyCharmRemains 为 true 时跳过
+    ///   bio=0 display=1 → 女身男相 → TomboyCharmRemains 为 true 时跳过
+    ///   bio=0 display=0 → 女身女相 → 始终跳过
     /// </summary>
     private static void GetAttractionPostfix(Character __instance, ref short __result)
     {
-        // Skip the player (Taiwu)
         if (__instance.IsTaiwu())
             return;
 
-        // Skip female characters — use displayed gender
-        // Gender.Male == 1, Gender.Female == 0
-        if (__instance.GetDisplayingGender() != 1)
-            return;
+        int bioGender = __instance.GetGender();
+        int displayGender = __instance.GetDisplayingGender();
+
+        if (bioGender == 0)
+        {
+            // 女身女相跳过，女身男相按 TomboyCharmRemains 判断
+            if (displayGender == 0 || _tomboyCharmRemains)
+                return;
+        }
+        else
+        {
+            // 男身男相缩放，男身女相按 FemboyCharmRemains 判断
+            if (displayGender == 0 && _femboyCharmRemains)
+                return;
+        }
 
         int maxCharm = _maxCharm;
 
-        // Only scale when a valid tier (1-8) is configured
         if (maxCharm < 1 || maxCharm > 8)
             return;
 
         short original = __result;
         short upperBound = TierUpperBounds[maxCharm - 1];
 
-        // Proportional scaling: new = floor(original / 900 * upperBound)
-        // Edge case: 900 maps to upperBound - 1 (the highest value within the target tier)
+        // 按比例缩放：new = floor(original / 900 * upperBound)
+        // 边界处理：900 映射到目标档位上限减一（即目标档位内的最大值）
         if (original == MaxCharmValue)
             __result = (short)(upperBound - 1);
         else
