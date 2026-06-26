@@ -60,6 +60,8 @@ public class Plugin : TaiwuRemakePlugin
 
     /// <summary>
     /// Reads the MaxCharm setting from the mod domain and caches it.
+    /// The framework passes dropdown indices as 0-based, so we add 1
+    /// to align with Config.lua Options (which are 1-indexed).
     /// </summary>
     private void ReadMaxCharmSetting()
     {
@@ -68,7 +70,8 @@ public class Plugin : TaiwuRemakePlugin
             int val = 0;
             if (DomainManager.Mod.GetSetting(ModIdStr, "MaxCharm", ref val))
             {
-                _maxCharm = val;
+                // Convert from 0-based framework index to 1-based tier index
+                _maxCharm = val + 1;
             }
         }
     }
