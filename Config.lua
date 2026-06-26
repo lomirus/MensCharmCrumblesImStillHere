@@ -3,8 +3,8 @@ return {
 	Author = "mirus",
 	Description = "可自定义除主角外所有男性角色的最高魅力等级。\n将原魅力值按比例缩放至选定区间内，保持相对层次感。\n\n[strike]防止玩家被牛[/strike]",
 	WorkshopCover = "images.jpg",
-	Version = "0.1.0.0",
-	GameVersion = "1.0.13.0",
+	Version = "0.1.1.0",
+	GameVersion = "1.0.32.0",
 	Source = 0,
 	FileId = 3748873190,
 	BackendPlugins = {
@@ -28,7 +28,7 @@ return {
 				[8] = "绝世",
 				[9] = "天人（无效果）",
 			},
-			DefaultValue = 5,
+			DefaultValue = 2,
 		},
 		[2] = {
 			SettingType = "Toggle",
