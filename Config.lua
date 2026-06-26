@@ -1,7 +1,7 @@
 return {
 	Title = "全世界男性魅力下降一百倍而我不变",
 	Author = "mirus",
-	Description = "除主角以外，世界上所有男性角色的魅力减半（最高魅力变为出众）。\n\n[strike]防止玩家被牛[/strike]",
+	Description = "可自定义除主角外所有男性角色的最高魅力等级。\n将原魅力值按比例缩放至选定区间内，保持相对层次感。\n\n[strike]防止玩家被牛[/strike]",
 	WorkshopCover = "images.jpg",
 	Version = "0.1.0.0",
 	GameVersion = "1.0.13.0",
@@ -10,7 +10,27 @@ return {
 	BackendPlugins = {
 		[1] = "MensCharmCrumblesImStillHere.dll",
 	},
-	DefaultSettings = { },
+	DefaultSettings = {
+		[1] = {
+			SettingType = "Dropdown",
+			Key = "MaxCharm",
+			DisplayName = "最高魅力",
+			Description = "其他男性角色的最高魅力",
+			GroupName = "模组配置",
+			Options = {
+				[1] = "非人",
+				[2] = "可憎",
+				[3] = "不扬",
+				[4] = "寻常",
+				[5] = "出众",
+				[6] = "瑾瑜",
+				[7] = "龙姿",
+				[8] = "绝世",
+				[9] = "天人（无效果）",
+			},
+			DefaultValue = 5,
+		},
+	},
 	Visibility = 0,
 	HasArchive = false,
 	ChangeConfig = false,
@@ -34,4 +54,7 @@ return {
 		},
 	},
 	Cover = "images.jpg",
+	SettingGroups = {
+		[1] = "模组配置",
+	},
 }
